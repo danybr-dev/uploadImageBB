@@ -110,8 +110,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 imageView.setImageBitmap(bitmap);
-                Log.d("log","avvio upload!");
-                uploadToBB(bitmap);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -125,15 +123,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return stream.toByteArray();
     }
 
-    public void uploadToBB(Bitmap bMap){
-        Log.d("log","Entrato nel try");
+    public void uploadToBB(){
         //in = new FileInputStream(filePath.toString());
-        Log.d("log","creato FileInputStream");
         //buf = new BufferedInputStream(in);
         //Bitmap bMap = BitmapFactory.decodeStream(buf);
         //InputStream data = (InputStream) new URL(url).getContent();; // input stream to upload
         //InputStream data = getContentResolver().openInputStream(filePath);// input stream to upload
-        byte[] stream = getBytesFromBitmap(bMap);
+        byte[] stream = getBytesFromBitmap(bitmap);
         Log.d("log","creato stream byte");
         BaasFile file = new BaasFile();
         file.upload(stream, new BaasHandler<BaasFile>() {
@@ -141,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void handle(BaasResult<BaasFile> baasResult) {
                 if( baasResult.isSuccess() ) {
                     Log.d("LOG","File uploaded with permissions");
+                    Toast.makeText(getApplicationContext(), "Image Uploaded!", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.e("LOG","Deal with error",baasResult.error());
                 }
@@ -153,6 +150,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if (v == buttonChoose) {
             showFileChooser();
+        }
+        if(v == buttonUpload){
+            uploadToBB();
         }
 
     }
